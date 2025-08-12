@@ -1,2 +1,32 @@
 
 @import "tailwindcss";
+/* In your src/index.css file */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* Style for desktop navigation links */
+  .nav-link-desktop {
+    @apply relative text-sm font-medium text-gray-600 hover:text-indigo-600 transition-colors duration-300;
+  }
+  /* The animated underline effect */
+  .nav-link-desktop::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-full h-0.5 bg-indigo-500 scale-x-0 origin-left transition-transform duration-300 ease-out;
+    transform: translateY(4px);
+  }
+  .nav-link-desktop:hover::after {
+    @apply scale-x-100;
+  }
+
+  /* Style for mobile navigation links */
+  .mobile-nav-link {
+    @apply block text-lg font-semibold text-gray-700 hover:bg-gray-100 hover:text-indigo-600 px-3 py-2 rounded-md transition-colors duration-200;
+  }
+
+  /* Style for dropdown menu items */
+  .dropdown-link {
+    @apply block w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-indigo-600 transition-colors duration-200;
+  }
+}
