@@ -1,3 +1,7 @@
+
+// Corrected file: src/components/Navbar.jsx
+// This file is updated to trigger the modal instead of navigating to a login page.
+
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,21 +11,23 @@ import {
   HiOutlineUserCircle,
   HiOutlineMenuAlt4,
   HiX,
-  HiOutlineShoppingCart, // NEW: We will use this
+  HiOutlineShoppingCart,
 } from "react-icons/hi";
-import { useAuth } from "../hooks/useAuth";
-import { useCart } from "../context/CartContext"; // NEW: Import useCart hook
+import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
+import { useModal } from "../context/ModalContext"; // NEW: Import the modal hook
+import AuthForm from "./AuthForm"; // NEW: Import the form to show in the modal
 
 const Navbar = () => {
   const { user, logout } = useAuth();
-  const { cartItemCount } = useCart(); // NEW: Get the item count from context
+  const { cartItemCount } = useCart();
+  const { openModal } = useModal(); // NEW: Get the openModal function
   const navigate = useNavigate();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef(null);
 
-  // ... (useEffect for closing dropdowns remains the same)
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
@@ -38,7 +44,7 @@ const Navbar = () => {
     setIsMenuOpen(false);
     navigate("/");
   };
-  
+
   const mobileMenuVariants = {
     hidden: { opacity: 0, y: -20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeInOut" } },
@@ -52,12 +58,12 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white/90 shadow-sm backdrop-blur-lg">
+    <header className="sticky top-0 z-40 bg-white/90 shadow-sm backdrop-blur-lg">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" onClick={() => setIsMenuOpen(false)}>
-            <img className="h-9 w-auto" src={Logo} alt="Logo" />
+            <img className="h-30 w-auto" src={Logo} alt="Logo" />
           </Link>
 
           {/* Desktop Navigation */}
@@ -77,16 +83,24 @@ const Navbar = () => {
                 <HiOutlineSearch className="h-6 w-6" />
               </button>
             </div>
-            
-            {/* NEW: Smart Cart Link */}
-            <Link 
-              to={user ? "/cart" : "/login"} // If user, go to cart. If not, go to login.
-              state={!user ? { from: '/cart' } : undefined} // Optional: tell login page where to redirect after success
+
+            {/* Smart Cart Link */}
+            <Link
+              to={user ? "/cart" : "#"}
+              onClick={(e) => {
+                if (!user) {
+                  e.preventDefault();
+                  openModal(<Modal>
+                    <AuthForm />
+                  </Modal>
+                  );
+                }
+              }}
               className="relative text-gray-600 hover:text-indigo-600"
             >
               <HiOutlineShoppingCart className="h-6 w-6" />
               <AnimatePresence>
-                {user && cartItemCount > 0 && ( // Show badge only if logged in and cart is not empty
+                {user && cartItemCount > 0 && (
                   <motion.span
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
@@ -100,10 +114,8 @@ const Navbar = () => {
               </AnimatePresence>
             </Link>
 
-
             {/* Auth Section */}
             {user ? (
-              // ... Profile Dropdown JSX (remains the same) ...
               <div className="relative" ref={profileRef}>
                 <button onClick={() => setIsProfileOpen(!isProfileOpen)}>
                   <HiOutlineUserCircle className="h-8 w-8 text-gray-600 hover:text-indigo-600 transition-colors" />
@@ -119,8 +131,10 @@ const Navbar = () => {
                 </AnimatePresence>
               </div>
             ) : (
-              // Register Button for Guests
-              <Link to="/login" className="hidden md:block text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors">Register / Login</Link>
+              // NEW: This is now a button that opens the modal
+              <button onClick={() => openModal(<AuthForm />)} className="hidden md:block text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors">
+                Register / Login
+              </button>
             )}
 
             {/* Mobile Menu Toggle */}
@@ -136,7 +150,6 @@ const Navbar = () => {
       {/* Mobile Menu Panel */}
       <AnimatePresence>
         {isMenuOpen && (
-          // ... Mobile Menu JSX (remains the same) ...
           <motion.div variants={mobileMenuVariants} initial="hidden" animate="visible" exit="exit" className="md:hidden absolute top-16 left-0 w-full bg-white shadow-lg">
             <div className="px-4 pt-4 pb-6 space-y-3">
               <Link to="/products" onClick={() => setIsMenuOpen(false)} className="mobile-nav-link">Products</Link>
@@ -144,9 +157,10 @@ const Navbar = () => {
               <Link to="/about" onClick={() => setIsMenuOpen(false)} className="mobile-nav-link">About Us</Link>
               {!user && (
                 <div className="border-t border-gray-200 pt-4">
-                  <Link to="/login" onClick={() => setIsMenuOpen(false)} className="block w-full text-center text-white font-semibold bg-indigo-600 hover:bg-indigo-700 px-4 py-2.5 rounded-md">
+                  {/* NEW: This button also opens the modal */}
+                  <button onClick={() => { openModal(<AuthForm />); setIsMenuOpen(false); }} className="block w-full text-center text-white font-semibold bg-indigo-600 hover:bg-indigo-700 px-4 py-2.5 rounded-md">
                     Register / Login
-                  </Link>
+                  </button>
                 </div>
               )}
             </div>
