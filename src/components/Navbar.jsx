@@ -69,7 +69,8 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/products" className="nav-link-desktop">Products</Link>
-            <Link to="/solutions" className="nav-link-desktop">Solutions</Link>
+            <Link to="/solutions" className="nav-link-desktop">Categories</Link>
+            <Link to="/about" className="nav-link-desktop">Contact Us</Link>
             <Link to="/about" className="nav-link-desktop">About Us</Link>
           </div>
 
@@ -132,7 +133,7 @@ const Navbar = () => {
               </div>
             ) : (
               // NEW: This is now a button that opens the modal
-              <button onClick={() => openModal(<AuthForm />)} className="hidden md:block text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors">
+              <button onClick={() => openModal(<AuthForm />)} className="hidden md:block text-sm font-medium text-gray-700 hover:text-indigo-600 transition-colors ">
                 Register / Login
               </button>
             )}
@@ -153,7 +154,8 @@ const Navbar = () => {
           <motion.div variants={mobileMenuVariants} initial="hidden" animate="visible" exit="exit" className="md:hidden absolute top-16 left-0 w-full bg-white shadow-lg">
             <div className="px-4 pt-4 pb-6 space-y-3">
               <Link to="/products" onClick={() => setIsMenuOpen(false)} className="mobile-nav-link">Products</Link>
-              <Link to="/solutions" onClick={() => setIsMenuOpen(false)} className="mobile-nav-link">Solutions</Link>
+              <Link to="/solutions" onClick={() => setIsMenuOpen(false)} className="mobile-nav-link">Categories</Link>
+              <Link to="/about" onClick={() => setIsMenuOpen(false)} className="mobile-nav-link">Contact Us</Link>
               <Link to="/about" onClick={() => setIsMenuOpen(false)} className="mobile-nav-link">About Us</Link>
               {!user && (
                 <div className="border-t border-gray-200 pt-4">
