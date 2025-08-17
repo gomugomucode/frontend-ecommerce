@@ -69,8 +69,8 @@ const Navbar = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
             <Link to="/products" className="nav-link-desktop">Products</Link>
-            <Link to="/solutions" className="nav-link-desktop">Categories</Link>
-            <Link to="/about" className="nav-link-desktop">Contact Us</Link>
+            <Link to="/categories" className="nav-link-desktop">Categories</Link>
+            <Link to="/contact" className="nav-link-desktop">Contact Us</Link>
             <Link to="/about" className="nav-link-desktop">About Us</Link>
           </div>
 

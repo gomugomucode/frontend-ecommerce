@@ -30,7 +30,7 @@ function App() {
                 {/* The /login and /signup routes are no longer needed */}
                 
                 <Route
-                  path="/dashboard"
+                  path="/"
                   element={
                     <ProtectedRoute>
                       <Dashboard />
